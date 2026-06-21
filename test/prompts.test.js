@@ -77,8 +77,9 @@ describe('buildFallbackImgPrompt', () => {
     assert.match(prompt, /cat/);
   });
 
-  test('includes cartoon style keywords', () => {
+  test('includes edgy style keywords from STYLES list', () => {
     const prompt = buildFallbackImgPrompt('Tabby');
-    assert.match(prompt, /cartoon/i);
+    const edgyKeywords = /acid|cyberpunk|glitch|vaporwave|dark fantasy|pop-art|graffiti|dreamcore/i;
+    assert.match(prompt, edgyKeywords);
   });
 });
