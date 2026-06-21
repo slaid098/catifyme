@@ -7,6 +7,12 @@ let translations = {};
 const listeners = new Set();
 
 function detectLang() {
+  const params = new URLSearchParams(location.search);
+  const queryLang = params.get('lang');
+  if (queryLang && SUPPORTED.includes(queryLang)) {
+    localStorage.setItem(STORAGE_KEY, queryLang);
+    return queryLang;
+  }
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored && SUPPORTED.includes(stored)) return stored;
   const nav = (navigator.language || '').toLowerCase();
