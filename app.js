@@ -1,6 +1,6 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
 import { ensureSignedIn, isSignedIn, isInsufficientFundsError, analyzeSelfie, generateCat } from './puter-api.js';
-import { composeShareableImage, shareImage, shareTo, copyLink, siteUrl } from './share.js';
+import { composeShareableImage, shareImage, shareTo, copyLink, downloadBlob, siteUrl } from './share.js';
 
 const els = {
   langBtns: document.querySelectorAll('.lang-btn'),
@@ -10,7 +10,7 @@ const els = {
   btnConfirm: document.getElementById('btn-confirm'),
   btnAgain: document.getElementById('btn-again'),
   btnShare: document.getElementById('btn-share'),
-  btnShareSystem: document.getElementById('btn-share-system'),
+  btnDownload: document.getElementById('btn-download'),
   shareBtns: document.querySelectorAll('[data-share]'),
   btnExplainerGo: document.getElementById('btn-explainer-go'),
   btnErrorRetry: document.getElementById('btn-error-retry'),
@@ -166,9 +166,30 @@ if (els.btnErrorPuter) {
   });
 }
 
-els.btnShare.addEventListener('click', () => {
+els.btnShare.addEventListener('click', async () => {
   if (!currentResult?.imgSrc) return;
-  openSheet('share');
+  const shareText = t('share.text');
+  try {
+    const blob = await composeShareableImage(currentResult.imgSrc);
+    const result = await shareImage(blob, shareText);
+    if (result === 'copied') {
+      openSheet('share');
+      showToast('share.copied');
+    }
+  } catch (err) {
+    if (err?.name === 'AbortError') return;
+    openSheet('share');
+  }
+});
+
+els.btnDownload.addEventListener('click', async () => {
+  if (!currentResult?.imgSrc) return;
+  try {
+    const blob = await composeShareableImage(currentResult.imgSrc);
+    downloadBlob(blob, 'catifyme.jpg');
+  } catch (err) {
+    showError('error.network', `stage: download | ${err?.message || 'error'}`);
+  }
 });
 
 els.shareBtns.forEach((btn) => {
@@ -190,24 +211,6 @@ els.shareBtns.forEach((btn) => {
       showError('error.network', `stage: share | ${platform} failed`);
     }
   });
-});
-
-els.btnShareSystem.addEventListener('click', async () => {
-  if (!currentResult?.imgSrc) return;
-  const shareText = t('share.text');
-  try {
-    const blob = await composeShareableImage(currentResult.imgSrc);
-    const result = await shareImage(blob, shareText);
-    if (result === 'copied') showToast('share.copied');
-  } catch (err) {
-    if (err?.name === 'AbortError') return;
-    try {
-      await copyLink(`${shareText} ${siteUrl()}`);
-      showToast('share.copied');
-    } catch {
-      showError('error.network', `stage: share | ${err?.message || 'error'}`);
-    }
-  }
 });
 
 function showToast(key) {
