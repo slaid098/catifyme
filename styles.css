@@ -431,14 +431,19 @@ body {
 }
 .sheet-actions .btn { flex: 1; }
 
-/* FOOTER */
-.footer {
-  padding: 16px var(--space) calc(var(--safe-bottom) + 12px);
-  text-align: center;
+.sheet-tech {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  background: var(--bg-elevated-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.72rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: left;
+  word-break: break-all;
+  line-height: 1.4;
 }
-.footer .heart { color: var(--accent); }
 
 /* TOAST */
 .toast {

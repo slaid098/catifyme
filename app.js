@@ -20,6 +20,7 @@ const els = {
   resultPersonality: document.getElementById('result-personality'),
   resultFunfact: document.getElementById('result-funfact'),
   errorMessage: document.getElementById('error-message'),
+  errorTech: document.getElementById('error-tech'),
   sheets: {
     explainer: document.getElementById('sheet-explainer'),
     error: document.getElementById('sheet-error'),
@@ -52,8 +53,16 @@ function closeSheet(name) {
   document.body.style.overflow = '';
 }
 
-function showError(messageKey) {
+function showError(messageKey, techDetail) {
   els.errorMessage.textContent = t(messageKey);
+  if (techDetail) {
+    els.errorTech.textContent = techDetail;
+    els.errorTech.hidden = false;
+  } else {
+    els.errorTech.hidden = true;
+    els.errorTech.textContent = '';
+  }
+  console.error('[catifyme]', messageKey, techDetail || '');
   openSheet('error');
 }
 
@@ -96,7 +105,7 @@ function readFileAsDataURL(file) {
 
 async function handleFile(file) {
   if (!file || !file.type.startsWith('image/')) {
-    showError('error.vision');
+    showError('error.vision', `stage: upload | type: ${file?.type || 'no file'}`);
     return;
   }
   try {
@@ -105,8 +114,8 @@ async function handleFile(file) {
     els.previewImg.src = dataURL;
     els.previewImg.alt = t('upload.preview.title');
     showScreen('preview');
-  } catch {
-    showError('error.vision');
+  } catch (err) {
+    showError('error.vision', `stage: upload | ${err?.message || 'read error'}`);
   }
 }
 
@@ -155,8 +164,8 @@ els.btnDownload.addEventListener('click', async () => {
   try {
     const blob = await composeShareableImage(currentResult.imgSrc);
     downloadBlob(blob, `catifyme-${currentResult.catName || 'cat'}.jpg`);
-  } catch {
-    showError('error.generate');
+  } catch (err) {
+    showError('error.generate', `stage: download | ${err?.message || 'error'}`);
   }
 });
 
@@ -172,8 +181,8 @@ els.btnShare.addEventListener('click', async () => {
     try {
       await copyLink(`${shareText} ${siteUrl()}`);
       showToast('share.copied');
-    } catch {
-      showError('error.network');
+    } catch (err2) {
+      showError('error.network', `stage: share | ${err2?.message || err?.message || 'error'}`);
     }
   }
 });
@@ -199,11 +208,14 @@ async function runAnalysis() {
   showScreen('loading');
   setLoadingText('loading.analyzing');
   setActiveStep('analyzing');
+  let stage = 'auth';
   try {
     await ensureSignedIn();
+    stage = 'vision';
     setLoadingText('loading.thinking');
     setActiveStep('thinking');
     const analysis = await analyzeSelfie(currentSelfie, getLang());
+    stage = 'image';
     setLoadingText('loading.drawing');
     setActiveStep('drawing');
     const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed);
@@ -212,7 +224,8 @@ async function runAnalysis() {
     showScreen('result');
   } catch (err) {
     showScreen('preview');
-    showError(mapError(err));
+    const tech = `stage: ${stage} | ${err?.code || err?.name || 'Error'}: ${err?.message || 'unknown'}`;
+    showError(mapError(err), tech);
   }
 }
 

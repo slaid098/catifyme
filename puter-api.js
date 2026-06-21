@@ -1,7 +1,32 @@
 import { buildVisionPrompt, buildFallbackImgPrompt } from './prompts.js';
 
-const VISION_MODEL = 'gpt-5-nano';
+const VISION_MODEL = 'gpt-4o';
 const IMAGE_MODEL = 'dall-e-3';
+const NORMALIZE_MAX = 1024;
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('image-decode-failed'));
+    img.src = src;
+  });
+}
+
+export async function normalizeImageToJPEG(dataURL) {
+  const img = await loadImage(dataURL);
+  const scale = Math.min(1, NORMALIZE_MAX / Math.max(img.width, img.height));
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', 0.9);
+}
 
 function extractText(response) {
   if (response == null) return '';
@@ -48,8 +73,9 @@ export async function ensureSignedIn() {
 
 export async function analyzeSelfie(imageDataURL, lang) {
   if (!imageDataURL) throw new Error('No image provided');
+  const normalized = await normalizeImageToJPEG(imageDataURL);
   const messages = buildVisionPrompt(lang);
-  const response = await puter.ai.chat(messages, imageDataURL, { model: VISION_MODEL });
+  const response = await puter.ai.chat(messages, normalized, { model: VISION_MODEL });
   const text = extractText(response);
   if (!text) throw new Error('Empty AI response');
   const data = parseJSON(text);
