@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f0d12" />
+  <title>CatifyMe — What cat are you?</title>
+  <meta name="description" content="Upload a selfie and get a cartoon cat that matches your vibe. Free, powered by AI." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CatifyMe — What cat are you?" />
+  <meta property="og:description" content="Upload a selfie and get a cartoon cat that matches your vibe." />
+  <meta property="og:image" content="assets/og-image.jpg" />
+  <meta property="og:url" content="https://catifyme.vercel.app" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="CatifyMe">
+      <span class="brand-mark">🐱</span>
+      <span class="brand-name">CatifyMe</span>
+    </a>
+    <nav class="lang-switch" aria-label="Language">
+      <button class="lang-btn" data-lang="ru" type="button">RU</button>
+      <span class="lang-sep" aria-hidden="true">|</span>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- HERO / UPLOAD -->
+    <section id="screen-hero" class="screen screen--hero is-active" aria-labelledby="hero-title">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <h1 id="hero-title" class="hero-title" data-i18n="app.tagline">What cat are you?</h1>
+      <p class="hero-subtitle" data-i18n="hero.subtitle">Upload a selfie — get a cartoon cat that matches your vibe</p>
+
+      <div class="upload-actions">
+        <label class="btn btn--primary btn--lg" for="file-input">
+          <span data-i18n="hero.cta">Upload selfie</span>
+          <input id="file-input" class="file-input" type="file" accept="image/*" hidden />
+        </label>
+        <label class="btn btn--ghost btn--lg" for="camera-input">
+          <span data-i18n="hero.cta.selfie">Take a selfie now</span>
+          <input id="camera-input" class="file-input" type="file" accept="image/*" capture="user" hidden />
+        </label>
+      </div>
+      <p class="upload-hint" data-i18n="upload.hint">Photo stays on your device, then goes to the AI</p>
+    </section>
+
+    <!-- PREVIEW -->
+    <section id="screen-preview" class="screen screen--preview" aria-labelledby="preview-title">
+      <h2 id="preview-title" class="section-title" data-i18n="upload.preview.title">Your photo</h2>
+      <div class="preview-frame">
+        <img id="preview-img" alt="" />
+      </div>
+      <div class="preview-actions">
+        <label class="btn btn--ghost" for="file-input">
+          <span data-i18n="upload.preview.change">Choose another</span>
+        </label>
+        <button id="btn-confirm" class="btn btn--primary" type="button" data-i18n="upload.preview.confirm">Find my cat</button>
+      </div>
+    </section>
+
+    <!-- LOADING -->
+    <section id="screen-loading" class="screen screen--loading" aria-live="polite">
+      <div class="loader">
+        <div class="loader-cat" aria-hidden="true">
+          <span class="paw">🐾</span>
+          <span class="paw">🐾</span>
+          <span class="paw">🐾</span>
+        </div>
+        <p id="loading-text" class="loader-text" data-i18n="loading.analyzing">Analyzing your selfie…</p>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="screen-result" class="screen screen--result" aria-labelledby="result-title">
+      <h2 id="result-title" class="section-title" data-i18n="result.title">Your cat</h2>
+      <figure class="result-card">
+        <div class="result-img-wrap">
+          <img id="result-img" alt="" />
+        </div>
+        <figcaption class="result-meta">
+          <p class="result-name" id="result-name"></p>
+          <dl class="result-facts">
+            <div>
+              <dt data-i18n="result.breed">Breed</dt>
+              <dd id="result-breed"></dd>
+            </div>
+            <div>
+              <dt data-i18n="result.personality">Personality</dt>
+              <dd id="result-personality"></dd>
+            </div>
+            <div>
+              <dt data-i18n="result.fun_fact">A fun fact about you-cat</dt>
+              <dd id="result-funfact"></dd>
+            </div>
+          </dl>
+        </figcaption>
+      </figure>
+      <div class="result-actions">
+        <button id="btn-download" class="btn btn--ghost" type="button" data-i18n="result.download">Download</button>
+        <button id="btn-share" class="btn btn--primary" type="button" data-i18n="result.share">Share</button>
+      </div>
+      <button id="btn-again" class="btn btn--text" type="button" data-i18n="result.again">Another photo</button>
+    </section>
+
+    <!-- EXPLAINER BOTTOM-SHEET -->
+    <div id="sheet-explainer" class="sheet" role="dialog" aria-modal="true" aria-labelledby="explainer-title" hidden>
+      <div class="sheet-backdrop" data-close="explainer"></div>
+      <div class="sheet-panel">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <h2 id="explainer-title" class="sheet-title" data-i18n="explainer.title">One step from your cat</h2>
+        <p class="sheet-body" data-i18n="explainer.body">To generate your cat we use Puter, a free AI service. Sign in to a Puter account once (like signing in with Google). Free credits are included; if you run out, you pay Puter directly. We don't charge you anything.</p>
+        <p class="sheet-note" data-i18n="explainer.note">You only pay for your own usage. Everyone gets a free tier.</p>
+        <div class="sheet-actions">
+          <button class="btn btn--ghost" type="button" data-close="explainer" data-i18n="explainer.cancel">Cancel</button>
+          <button id="btn-explainer-go" class="btn btn--primary" type="button" data-i18n="explainer.confirm">Let's go</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR BOTTOM-SHEET -->
+    <div id="sheet-error" class="sheet" role="dialog" aria-modal="true" aria-labelledby="error-title" hidden>
+      <div class="sheet-backdrop" data-close="error"></div>
+      <div class="sheet-panel">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <h2 id="error-title" class="sheet-title" data-i18n="error.title">Something went wrong</h2>
+        <p id="error-message" class="sheet-body"></p>
+        <div class="sheet-actions">
+          <button class="btn btn--ghost" type="button" data-close="error" data-i18n="error.close">Close</button>
+          <button id="btn-error-retry" class="btn btn--primary" type="button" data-i18n="error.retry">Retry</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>
+      <span data-i18n="footer.made_with">Made with</span>
+      <span class="heart" aria-hidden="true">♥</span>
+      ·
+      <span data-i18n="footer.powered_by">on Puter.js</span>
+    </p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
