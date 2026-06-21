@@ -1,5 +1,5 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
-import { ensureSignedIn, isSignedIn, isInsufficientFundsError, analyzeSelfie, generateCat } from './puter-api.js';
+import { ensureSignedIn, isSignedIn, isInsufficientFundsError, analyzeSelfie, generateCat, normalizeImageToJPEG } from './puter-api.js';
 import { composeShareableImage, shareImage, shareTo, copyLink, downloadBlob, siteUrl } from './share.js';
 
 const els = {
@@ -39,6 +39,32 @@ const screens = {
 
 let currentSelfie = null;
 let currentResult = null;
+
+const PENDING_SELFIE_KEY = 'catifyme-pending-selfie';
+
+function savePendingSelfie(dataURL) {
+  try {
+    sessionStorage.setItem(PENDING_SELFIE_KEY, dataURL);
+  } catch (e) {
+    // sessionStorage full or unavailable — silently ignore
+  }
+}
+
+function getPendingSelfie() {
+  try {
+    return sessionStorage.getItem(PENDING_SELFIE_KEY);
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearPendingSelfie() {
+  try {
+    sessionStorage.removeItem(PENDING_SELFIE_KEY);
+  } catch (e) {
+    // ignore
+  }
+}
 
 function showScreen(name) {
   Object.values(screens).forEach((s) => s.classList.remove('is-active'));
@@ -139,6 +165,7 @@ els.cameraInput.addEventListener('change', (e) => {
 els.btnAgain.addEventListener('click', () => {
   currentSelfie = null;
   currentResult = null;
+  clearPendingSelfie();
   showScreen('hero');
 });
 
@@ -233,6 +260,12 @@ async function runAnalysis() {
   }
   showScreen('loading');
   setLoadingText('loading.analyzing');
+  try {
+    const normalized = await normalizeImageToJPEG(currentSelfie);
+    savePendingSelfie(normalized);
+  } catch (e) {
+    savePendingSelfie(currentSelfie);
+  }
   let stage = 'auth';
   try {
     await ensureSignedIn();
@@ -243,6 +276,7 @@ async function runAnalysis() {
     setLoadingText('loading.drawing');
     const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed);
     currentResult = { ...analysis, imgSrc: catImg.src };
+    clearPendingSelfie();
     renderResult(currentResult);
     showScreen('result');
   } catch (err) {
@@ -268,9 +302,20 @@ function renderResult(analysis) {
   els.resultImg.alt = analysis.catName || '';
 }
 
-function init() {
+async function init() {
   onLangChange(updateLangButtons);
-  initI18n().catch(() => {});
+  await initI18n().catch(() => {});
+  const pending = getPendingSelfie();
+  if (pending) {
+    currentSelfie = pending;
+    els.previewImg.src = pending;
+    els.previewImg.alt = '';
+    if (isSignedIn()) {
+      await runAnalysis();
+    } else {
+      showScreen('preview');
+    }
+  }
 }
 
 init();
