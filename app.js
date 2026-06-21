@@ -1,4 +1,5 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
+import { ensureSignedIn, analyzeSelfie } from './puter-api.js';
 
 const els = {
   langBtns: document.querySelectorAll('.lang-btn'),
@@ -53,6 +54,13 @@ function closeSheet(name) {
 function showError(messageKey) {
   els.errorMessage.textContent = t(messageKey);
   openSheet('error');
+}
+
+function mapError(err) {
+  if (err?.code === 'no_face') return 'error.vision';
+  if (err?.message?.includes('auth') || err?.message?.includes('sign')) return 'error.login';
+  if (err?.message?.includes('network') || err?.name === 'TypeError') return 'error.network';
+  return 'error.generate';
 }
 
 function setLoadingText(key) {
@@ -116,6 +124,49 @@ els.btnAgain.addEventListener('click', () => {
   currentResult = null;
   showScreen('hero');
 });
+
+els.btnConfirm.addEventListener('click', () => {
+  openSheet('explainer');
+});
+
+els.btnExplainerGo.addEventListener('click', async () => {
+  closeSheet('explainer');
+  await runAnalysis();
+});
+
+els.btnErrorRetry.addEventListener('click', async () => {
+  closeSheet('error');
+  if (currentSelfie) await runAnalysis();
+});
+
+async function runAnalysis() {
+  if (!currentSelfie) {
+    showScreen('hero');
+    return;
+  }
+  showScreen('loading');
+  setLoadingText('loading.analyzing');
+  try {
+    await ensureSignedIn();
+    setLoadingText('loading.thinking');
+    const analysis = await analyzeSelfie(currentSelfie, getLang());
+    currentResult = analysis;
+    renderResult(analysis);
+    showScreen('result');
+  } catch (err) {
+    showScreen('preview');
+    showError(mapError(err));
+  }
+}
+
+function renderResult(analysis) {
+  els.resultName.textContent = analysis.catName;
+  els.resultBreed.textContent = analysis.catBreed;
+  els.resultPersonality.textContent = analysis.personality;
+  els.resultFunfact.textContent = analysis.funFact;
+  els.resultImg.removeAttribute('src');
+  els.resultImg.alt = analysis.catName || t('result.title');
+}
 
 function init() {
   onLangChange(updateLangButtons);
