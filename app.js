@@ -67,6 +67,16 @@ function setLoadingText(key) {
   els.loadingText.textContent = t(key);
 }
 
+const STEP_ORDER = ['analyzing', 'thinking', 'drawing'];
+
+function setActiveStep(step) {
+  const idx = STEP_ORDER.indexOf(step);
+  document.querySelectorAll('.loader-steps .step').forEach((el, i) => {
+    el.classList.toggle('is-active', i === idx);
+    el.classList.toggle('is-done', i < idx);
+  });
+}
+
 function updateLangButtons() {
   const active = getLang();
   els.langBtns.forEach((btn) => {
@@ -146,11 +156,14 @@ async function runAnalysis() {
   }
   showScreen('loading');
   setLoadingText('loading.analyzing');
+  setActiveStep('analyzing');
   try {
     await ensureSignedIn();
     setLoadingText('loading.thinking');
+    setActiveStep('thinking');
     const analysis = await analyzeSelfie(currentSelfie, getLang());
     setLoadingText('loading.drawing');
+    setActiveStep('drawing');
     const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed);
     currentResult = { ...analysis, imgSrc: catImg.src };
     renderResult(currentResult);
@@ -166,9 +179,12 @@ function renderResult(analysis) {
   els.resultBreed.textContent = analysis.catBreed;
   els.resultPersonality.textContent = analysis.personality;
   els.resultFunfact.textContent = analysis.funFact;
+  const wrap = els.resultImg.parentElement;
   if (analysis.imgSrc) {
+    wrap.classList.remove('is-loading');
     els.resultImg.src = analysis.imgSrc;
   } else {
+    wrap.classList.add('is-loading');
     els.resultImg.removeAttribute('src');
   }
   els.resultImg.alt = analysis.catName || t('result.title');

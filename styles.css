@@ -256,6 +256,28 @@ body {
   margin: 0;
 }
 
+.loader-steps {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+}
+.loader-steps .step {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.loader-steps .step.is-active {
+  background: var(--accent);
+  transform: scale(1.25);
+}
+.loader-steps .step.is-done {
+  background: var(--accent-2);
+}
+
 /* RESULT */
 .screen--result { gap: 20px; }
 .result-card {
@@ -274,12 +296,34 @@ body {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+  position: relative;
 }
 .result-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+.result-img-wrap img:not([src]),
+.result-img-wrap img[src=""] {
+  visibility: hidden;
+}
+.result-img-wrap.is-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
 }
 .result-meta { display: flex; flex-direction: column; gap: 12px; }
 .result-name {
