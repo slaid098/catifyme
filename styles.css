@@ -141,6 +141,20 @@ body {
   max-width: 360px;
 }
 
+.hero-footer {
+  margin-top: 28px;
+  font-size: 0.85rem;
+}
+.hero-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.hero-footer a:hover,
+.hero-footer a:focus-visible {
+  color: var(--accent);
+}
+
 /* BUTTONS */
 .btn {
   display: inline-flex;
