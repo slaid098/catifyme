@@ -1,5 +1,5 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
-import { ensureSignedIn, isSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
+import { ensureSignedIn, isSignedIn, isInsufficientFundsError, analyzeSelfie, generateCat } from './puter-api.js';
 import { composeShareableImage, shareImage, shareTo, copyLink, siteUrl } from './share.js';
 
 const els = {
@@ -22,6 +22,7 @@ const els = {
   resultFunfact: document.getElementById('result-funfact'),
   errorMessage: document.getElementById('error-message'),
   errorTech: document.getElementById('error-tech'),
+  btnErrorPuter: document.getElementById('btn-error-puter'),
   sheets: {
     explainer: document.getElementById('sheet-explainer'),
     error: document.getElementById('sheet-error'),
@@ -64,11 +65,15 @@ function showError(messageKey, techDetail) {
     els.errorTech.hidden = true;
     els.errorTech.textContent = '';
   }
+  if (els.btnErrorPuter) {
+    els.btnErrorPuter.hidden = messageKey !== 'error.credits';
+  }
   console.error('[catifyme]', messageKey, techDetail || '');
   openSheet('error');
 }
 
 function mapError(err) {
+  if (isInsufficientFundsError(err)) return 'error.credits';
   if (err?.message?.includes('auth') || err?.message?.includes('sign')) return 'error.login';
   if (err?.message?.includes('network') || err?.name === 'TypeError') return 'error.network';
   if (err?.message?.includes('image-decode') || err?.message?.includes('vision')) return 'error.vision';
@@ -154,6 +159,12 @@ els.btnErrorRetry.addEventListener('click', async () => {
   closeSheet('error');
   if (currentSelfie) await runAnalysis();
 });
+
+if (els.btnErrorPuter) {
+  els.btnErrorPuter.addEventListener('click', () => {
+    window.open('https://puter.com', '_blank', 'noopener');
+  });
+}
 
 els.btnShare.addEventListener('click', () => {
   if (!currentResult?.imgSrc) return;

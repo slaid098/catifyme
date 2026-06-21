@@ -30,6 +30,8 @@
   "error.vision": "Couldn't read the photo. Try another selfie.",
   "error.generate": "The cat didn't render. Please try again.",
   "error.network": "Network error. Check your internet.",
+  "error.credits": "You've run out of free credits. Open Puter to top up, then come back.",
+  "error.puter": "Open Puter",
   "error.retry": "Retry",
   "error.close": "Close",
   "share.copied": "Link copied",

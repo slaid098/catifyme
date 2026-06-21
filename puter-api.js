@@ -73,6 +73,15 @@ export async function ensureSignedIn() {
   await puter.auth.signIn();
 }
 
+export function isInsufficientFundsError(err) {
+  const code = err?.code || '';
+  const msg = err?.message || '';
+  return (
+    code === 'insufficient_funds' ||
+    /insufficient[ _-]?funds|out[ _-]?of[ _-]?credits|no[ _-]?credit/i.test(msg)
+  );
+}
+
 function dataURLtoBlob(dataURL) {
   const [header, base64] = dataURL.split(',');
   const mime = (header.match(/data:(.*?);/) || [, 'image/jpeg'])[1];

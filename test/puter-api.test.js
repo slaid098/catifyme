@@ -152,6 +152,33 @@ describe('isSignedIn', () => {
   });
 });
 
+describe('isInsufficientFundsError', () => {
+  test('matches code insufficient_funds', () => {
+    const err = { code: 'insufficient_funds', message: 'some text' };
+    assert.equal(puterApi.isInsufficientFundsError(err), true);
+  });
+
+  test('matches message "insufficient funds"', () => {
+    const err = new Error('Insufficient funds for this operation');
+    assert.equal(puterApi.isInsufficientFundsError(err), true);
+  });
+
+  test('matches message "out of credits"', () => {
+    const err = new Error('You are out of credits');
+    assert.equal(puterApi.isInsufficientFundsError(err), true);
+  });
+
+  test('returns false for generic error', () => {
+    const err = new Error('network failure');
+    assert.equal(puterApi.isInsufficientFundsError(err), false);
+  });
+
+  test('returns false for null/undefined', () => {
+    assert.equal(puterApi.isInsufficientFundsError(null), false);
+    assert.equal(puterApi.isInsufficientFundsError(undefined), false);
+  });
+});
+
 describe('extractText (via analyzeSelfie response shapes)', () => {
   test('handles string response', async () => {
     mock.state.chatResponse = '{"cat_breed":"Tabby","img_prompt":"x"}';
