@@ -13,7 +13,13 @@ export function installDomMocks() {
 
   globalThis.window = globalThis;
 
+  globalThis.location = {
+    search: '',
+    href: 'https://catifyme.vercel.app/',
+  };
+
   globalThis.document = {
+    documentElement: { lang: '', setAttribute: () => {} },
     createElement: (tag) => {
       if (tag === 'canvas') {
         return {
@@ -128,4 +134,5 @@ export function resetDomMocks() {
     }
   }
   globalThis.navigator.language = 'en-US';
+  globalThis.location.search = '';
 }
