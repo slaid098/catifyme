@@ -67,7 +67,7 @@ export async function shareImage(blob, shareText) {
   const file = new File([blob], 'catifyme.jpg', { type: 'image/jpeg' });
   const nav = navigator;
   if (nav.canShare && nav.canShare({ files: [file] })) {
-    await nav.share({ files: [file], text: shareText, title: 'CatifyMe' });
+    await nav.share({ files: [file], text: `${shareText} ${SITE_URL}`, title: 'CatifyMe' });
     return 'shared';
   }
   if (nav.share) {

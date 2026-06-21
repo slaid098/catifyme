@@ -54,7 +54,7 @@ describe('shareImage', () => {
     const result = await share.shareImage(blob, 'Check out my cat');
     assert.equal(result, 'shared');
     assert.ok(sharedData.files, 'should share files');
-    assert.equal(sharedData.text, 'Check out my cat');
+    assert.match(sharedData.text, /Check out my cat.*catifyme/, 'text should include shareText and URL');
   });
 
   test('falls back to navigator.share without files when canShare is false', async () => {

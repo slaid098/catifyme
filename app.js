@@ -110,6 +110,14 @@ function setLoadingText(key) {
   els.loadingText.textContent = t(key);
 }
 
+function buildShareText() {
+  if (!currentResult) return t('share.text');
+  return t('share.template')
+    .replace('{name}', currentResult.catName)
+    .replace('{breed}', currentResult.catBreed)
+    .replace('{funFact}', currentResult.funFact);
+}
+
 function updateLangButtons() {
   const active = getLang();
   els.langBtns.forEach((btn) => {
@@ -195,7 +203,7 @@ if (els.btnErrorPuter) {
 
 els.btnShare.addEventListener('click', async () => {
   if (!currentResult?.imgSrc) return;
-  const shareText = t('share.text');
+  const shareText = buildShareText();
   try {
     const blob = await composeShareableImage(currentResult.imgSrc);
     const result = await shareImage(blob, shareText);
@@ -222,7 +230,7 @@ els.btnDownload.addEventListener('click', async () => {
 els.shareBtns.forEach((btn) => {
   btn.addEventListener('click', async () => {
     const platform = btn.dataset.share;
-    const shareText = t('share.text');
+    const shareText = buildShareText();
     if (platform === 'copy') {
       try {
         await copyLink(`${shareText} ${siteUrl()}`);

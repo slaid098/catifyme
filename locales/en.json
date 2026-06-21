@@ -37,6 +37,7 @@
   "error.close": "Close",
   "share.copied": "Link copied",
   "share.text": "Find out what cat you are → ",
+  "share.template": "I'm {name}, the {breed}. {funFact} What cat are you? → ",
   "share.title": "Share",
   "share.copy_link": "Copy link",
   "share.via_system": "Share via system dialog",
