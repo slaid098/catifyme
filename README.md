@@ -12,8 +12,10 @@
 
 ### Запуск
 ```
+git clone https://github.com/slaid098/catifyme.git
+cd catifyme
 npx serve
-python3 -m http.server 8000
+# или: python3 -m http.server 8000
 ```
 
 ## English
@@ -22,8 +24,10 @@ Turns your selfie into a mindblowing cat with personality.
 
 ### Run
 ```
+git clone https://github.com/slaid098/catifyme.git
+cd catifyme
 npx serve
-python3 -m http.server 8000
+# or: python3 -m http.server 8000
 ```
 
 MIT — see [LICENSE](./LICENSE).
