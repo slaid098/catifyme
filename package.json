@@ -1,0 +1,15 @@
+{
+  "name": "catifyme",
+  "version": "1.0.0",
+  "description": "Upload a selfie — get a cartoon cat that matches your vibe. Powered by Puter.js.",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/",
+    "test:verbose": "node --test --test-reporter=spec test/"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
