@@ -1,6 +1,7 @@
-import { buildVisionPrompt } from './prompts.js';
+import { buildVisionPrompt, buildFallbackImgPrompt } from './prompts.js';
 
 const VISION_MODEL = 'gpt-5-nano';
+const IMAGE_MODEL = 'dall-e-3';
 
 function extractText(response) {
   if (response == null) return '';
@@ -67,4 +68,12 @@ export async function analyzeSelfie(imageDataURL, lang) {
     funFact: data.fun_fact,
     imgPrompt: data.img_prompt,
   };
+}
+
+export async function generateCat(imgPrompt, breed) {
+  if (typeof puter === 'undefined') throw new Error('Puter not loaded');
+  const prompt = imgPrompt || buildFallbackImgPrompt(breed);
+  const imgEl = await puter.ai.txt2img(prompt, { model: IMAGE_MODEL });
+  if (!imgEl || !imgEl.src) throw new Error('Image generation returned empty result');
+  return imgEl;
 }

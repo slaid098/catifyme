@@ -1,5 +1,5 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
-import { ensureSignedIn, analyzeSelfie } from './puter-api.js';
+import { ensureSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
 
 const els = {
   langBtns: document.querySelectorAll('.lang-btn'),
@@ -150,8 +150,10 @@ async function runAnalysis() {
     await ensureSignedIn();
     setLoadingText('loading.thinking');
     const analysis = await analyzeSelfie(currentSelfie, getLang());
-    currentResult = analysis;
-    renderResult(analysis);
+    setLoadingText('loading.drawing');
+    const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed);
+    currentResult = { ...analysis, imgSrc: catImg.src };
+    renderResult(currentResult);
     showScreen('result');
   } catch (err) {
     showScreen('preview');
@@ -164,7 +166,11 @@ function renderResult(analysis) {
   els.resultBreed.textContent = analysis.catBreed;
   els.resultPersonality.textContent = analysis.personality;
   els.resultFunfact.textContent = analysis.funFact;
-  els.resultImg.removeAttribute('src');
+  if (analysis.imgSrc) {
+    els.resultImg.src = analysis.imgSrc;
+  } else {
+    els.resultImg.removeAttribute('src');
+  }
   els.resultImg.alt = analysis.catName || t('result.title');
 }
 
