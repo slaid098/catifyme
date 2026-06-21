@@ -10,7 +10,9 @@
 
 Превращает твоё селфи в крышесносного кота с характером.
 
-### Запуск
+▶️ Живая версия: https://catifyme.vercel.app
+
+### Локальный запуск
 ```
 git clone https://github.com/slaid098/catifyme.git
 cd catifyme
@@ -22,7 +24,9 @@ npx serve
 
 Turns your selfie into a mindblowing cat with personality.
 
-### Run
+▶️ Live demo: https://catifyme.vercel.app
+
+### Run locally
 ```
 git clone https://github.com/slaid098/catifyme.git
 cd catifyme
