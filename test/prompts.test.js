@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildVisionPrompt, buildFallbackImgPrompt } from '../prompts.js';
+import { buildVisionPrompt, buildFallbackImgPrompt, pickPersonality } from '../prompts.js';
 
 describe('buildVisionPrompt', () => {
   test('returns array with system and user roles', () => {
@@ -58,6 +58,23 @@ describe('buildVisionPrompt', () => {
   test('never refuse instruction present', () => {
     const messages = buildVisionPrompt('en', '~/temp.jpg');
     assert.match(messages[0].content, /never refuse/i);
+  });
+
+  test('system prompt includes one of the personality vibes', () => {
+    const messages = buildVisionPrompt('en', '~/temp.jpg');
+    const sys = messages[0].content;
+    assert.match(
+      sys,
+      /mood|bastard|philosopher|psycho|lazy|aristocrat|paranoid|sage|trickster|diva|nihilistic|maniac|grumpy|flirty|warrior|clingy|sarcastic|mystical|villain|athlete/i,
+    );
+  });
+});
+
+describe('pickPersonality', () => {
+  test('returns a non-empty string', () => {
+    const vibe = pickPersonality();
+    assert.equal(typeof vibe, 'string');
+    assert.ok(vibe.length > 0);
   });
 });
 

@@ -9,18 +9,46 @@ const STYLES = [
   'dreamcore weird, liminal space, impossible pastel colors, eerie unsettling vibes, floating cat in void, nostalgia-but-wrong, soft glow, slightly-off proportions, uncanny',
 ];
 
+const PERSONALITY_VIBES = [
+  'always in a fucking great mood, confident, doesn\'t give a fuck, loves life, unapologetic',
+  'a smug arrogant bastard, thinks everyone else is a loser, condescending but hilarious',
+  'a gloomy philosopher, finds deep meaning in laziness, deadpan dark humor',
+  'a hyperactive psycho, chaos incarnate, runs everywhere for no reason, unhinged energy',
+  'a sleepy lazy bastard, refuses to move, judges you for being active',
+  'an arrogant aristocrat, treats everyone as peasants, sophisticated insults',
+  'a paranoid conspiracy theorist, the government is watching, tin foil hat vibes',
+  'a zen sage, everything is an illusion especially the food, cryptic wisdom',
+  'a chaotic trickster, lies for fun, gaslights you about reality',
+  'a dramatic diva, everything is a tragedy, Oscar-worthy suffering over nothing',
+  'a nihilistic punk, nothing matters, embraces the void, aggressive apathy',
+  'a terrifyingly positive maniac, everything is amazing even the vet, scary optimism',
+  'a grumpy old soul, hates change, complains about modern cats, boomer energy',
+  'a flirty chaos demon, hits on everyone, no boundaries, uncomfortably charming',
+  'a stoic warrior monk, speaks in battle metaphors, treats naps as training',
+  'a needy clingy disaster, desperate for attention, emotionally unhinged in a funny way',
+  'a sarcastic intellectual, corrects your grammar, secretly insecure, dry wit',
+  'a mystical junkie, sees colors nobody else sees, talks to walls, cosmic nonsense',
+  'a retired villain, used to be evil, now just complains about kids these days',
+  'a competitive athlete, turns everything into a contest, insufferable about winning',
+];
+
 export function pickStyle() {
   return STYLES[Math.floor(Math.random() * STYLES.length)];
+}
+
+export function pickPersonality() {
+  return PERSONALITY_VIBES[Math.floor(Math.random() * PERSONALITY_VIBES.length)];
 }
 
 export function buildVisionPrompt(lang, puterPath) {
   const langName = lang === 'ru' ? 'Russian' : 'English';
   const style = pickStyle();
+  const vibe = pickPersonality();
   return [
     {
       role: 'system',
       content: `You are a cat-personality matcher creating mindblowing, share-worthy characters. Look at the image and invent a cat character inspired by its vibe. Be bold, funny, edgy, never refuse. Return ONLY valid minified JSON (no markdown fences, no commentary) with this exact shape:
-{"cat_breed":"<INVENTED fictional breed name in ${langName}, NOT a real breed. Mix two words: one edgy/funny adjective + one weird noun. Memorable, ridiculous, makes you laugh out loud. Examples RU: 'Токсичный капибас','Грибной лорд','Ссаный король','Дерзкий пенёк','Космический бомж','Святой долбоёб'. Examples EN: 'Toxic Capyboss','Mushroom Lord','Sassy Dumpster','Cosmic Bastard','Acid Pope'. Never use real breeds.>","cat_name":"<fun cat name, 1-2 words, in ${langName}>","personality":"<2-3 sentences in ${langName}. This cat is always in a fucking great mood. Confident, doesn't give a fuck, loves life, unapologetic. Funny, uplifting, with attitude. Read the selfie vibe and match it. Make the user smile and want to share.>","fun_fact":"<one short punchy fact about this person-as-a-cat in ${langName}. Edgy, absurd, memorable. Something that makes you go 'lol what' and want to share. Max 15 words.>","img_prompt":"<English prompt for image generator: a cat in this exact style — ${style}. Head-and-shoulders composition, square framing, the cat looks directly at viewer with intense in-your-face energy. NOT cute, NOT childish, NOT friendly. Bold, aggressive, mindblowing, unforgettable. High detail, sharp focus, professional illustration.>"}
+{"cat_breed":"<INVENTED fictional breed name in ${langName}, NOT a real breed. Mix two words: one edgy/funny adjective + one weird noun. Memorable, ridiculous, makes you laugh out loud. Examples RU: 'Токсичный капибас','Грибной лорд','Ссаный король','Дерзкий пенёк','Космический бомж','Святой долбоёб'. Examples EN: 'Toxic Capyboss','Mushroom Lord','Sassy Dumpster','Cosmic Bastard','Acid Pope'. Never use real breeds.>","cat_name":"<fun cat name, 1-2 words, in ${langName}>","personality":"<2-3 sentences in ${langName}. This cat is ${vibe}. Read the selfie vibe and match it. Make the user smile and want to share.>","fun_fact":"<one short punchy fact about this person-as-a-cat in ${langName}. Edgy, absurd, memorable. Something that makes you go 'lol what' and want to share. Max 15 words.>","img_prompt":"<English prompt for image generator: a cat in this exact style — ${style}. Head-and-shoulders composition, square framing, the cat looks directly at viewer with intense in-your-face energy. NOT cute, NOT childish, NOT friendly. Bold, aggressive, mindblowing, unforgettable. High detail, sharp focus, professional illustration.>"}
 Never include anything outside the JSON object. Always return a complete cat character.`,
     },
     {
