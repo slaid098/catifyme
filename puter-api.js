@@ -61,6 +61,10 @@ function parseJSON(text) {
   return JSON.parse(slice);
 }
 
+export function isSignedIn() {
+  return typeof puter !== 'undefined' && puter.auth?.isSignedIn?.() === true;
+}
+
 export async function ensureSignedIn() {
   if (typeof puter === 'undefined') {
     throw new Error('Puter not loaded');

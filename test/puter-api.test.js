@@ -135,6 +135,23 @@ describe('ensureSignedIn', () => {
   });
 });
 
+describe('isSignedIn', () => {
+  test('returns true when signed in', () => {
+    mock.state.signedIn = true;
+    assert.equal(puterApi.isSignedIn(), true);
+  });
+
+  test('returns false when not signed in', () => {
+    mock.state.signedIn = false;
+    assert.equal(puterApi.isSignedIn(), false);
+  });
+
+  test('returns false when puter not loaded', () => {
+    uninstallPuter();
+    assert.equal(puterApi.isSignedIn(), false);
+  });
+});
+
 describe('extractText (via analyzeSelfie response shapes)', () => {
   test('handles string response', async () => {
     mock.state.chatResponse = '{"cat_breed":"Tabby","img_prompt":"x"}';

@@ -1,5 +1,5 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
-import { ensureSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
+import { ensureSignedIn, isSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
 import { composeShareableImage, shareImage, shareTo, copyLink, siteUrl } from './share.js';
 
 const els = {
@@ -137,8 +137,12 @@ els.btnAgain.addEventListener('click', () => {
   showScreen('hero');
 });
 
-els.btnConfirm.addEventListener('click', () => {
-  openSheet('explainer');
+els.btnConfirm.addEventListener('click', async () => {
+  if (isSignedIn()) {
+    await runAnalysis();
+  } else {
+    openSheet('explainer');
+  }
 });
 
 els.btnExplainerGo.addEventListener('click', async () => {
