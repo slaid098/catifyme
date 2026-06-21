@@ -201,9 +201,21 @@ if (els.btnErrorPuter) {
   });
 }
 
+function isTouchDevice() {
+  try {
+    return window.matchMedia('(pointer: coarse)').matches;
+  } catch {
+    return false;
+  }
+}
+
 els.btnShare.addEventListener('click', async () => {
   if (!currentResult?.imgSrc) return;
   const shareText = buildShareText();
+  if (!isTouchDevice()) {
+    openSheet('share');
+    return;
+  }
   try {
     const blob = await composeShareableImage(currentResult.imgSrc);
     const result = await shareImage(blob, shareText);
