@@ -70,7 +70,7 @@ export async function ensureSignedIn() {
     throw new Error('Puter not loaded');
   }
   if (puter.auth?.isSignedIn?.()) return;
-  await puter.auth.signIn();
+  await puter.auth.signIn({ attempt_temp_user_creation: true });
 }
 
 export function isInsufficientFundsError(err) {
