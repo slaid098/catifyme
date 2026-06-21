@@ -1,7 +1,7 @@
 import { buildVisionPrompt, buildFallbackImgPrompt } from './prompts.js';
 
 const VISION_MODEL = 'gpt-4o-mini';
-const IMAGE_MODEL = 'dall-e-3';
+const IMAGE_MODEL = 'gpt-image-1-mini';
 const NORMALIZE_MAX = 1536;
 
 function loadImage(src) {
@@ -108,7 +108,7 @@ export async function analyzeSelfie(imageDataURL, lang) {
 export async function generateCat(imgPrompt, breed) {
   if (typeof puter === 'undefined') throw new Error('Puter not loaded');
   const prompt = imgPrompt || buildFallbackImgPrompt(breed);
-  const imgEl = await puter.ai.txt2img(prompt, { model: IMAGE_MODEL });
+  const imgEl = await puter.ai.txt2img(prompt, { model: IMAGE_MODEL, quality: 'low' });
   if (!imgEl || !imgEl.src) throw new Error('Image generation returned empty result');
   return imgEl;
 }

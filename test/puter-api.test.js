@@ -85,6 +85,14 @@ describe('generateCat', () => {
     assert.ok(img.src);
   });
 
+  test('passes model and quality options to txt2img', async () => {
+    let capturedOpts;
+    mock.puter.ai.txt2img = async (prompt, opts) => { capturedOpts = opts; return { src: 'data:mock' }; };
+    await puterApi.generateCat('prompt', 'Tabby');
+    assert.equal(capturedOpts.model, 'gpt-image-1-mini');
+    assert.equal(capturedOpts.quality, 'low');
+  });
+
   test('uses imgPrompt when provided', async () => {
     let capturedPrompt;
     mock.puter.ai.txt2img = async (prompt) => { capturedPrompt = prompt; return { src: 'data:mock' }; };
