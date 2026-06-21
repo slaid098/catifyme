@@ -1,5 +1,6 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
 import { ensureSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
+import { composeShareableImage, downloadBlob, shareImage, copyLink, siteUrl } from './share.js';
 
 const els = {
   langBtns: document.querySelectorAll('.lang-btn'),
@@ -148,6 +149,47 @@ els.btnErrorRetry.addEventListener('click', async () => {
   closeSheet('error');
   if (currentSelfie) await runAnalysis();
 });
+
+els.btnDownload.addEventListener('click', async () => {
+  if (!currentResult?.imgSrc) return;
+  try {
+    const blob = await composeShareableImage(currentResult.imgSrc);
+    downloadBlob(blob, `catifyme-${currentResult.catName || 'cat'}.jpg`);
+  } catch {
+    showError('error.generate');
+  }
+});
+
+els.btnShare.addEventListener('click', async () => {
+  if (!currentResult?.imgSrc) return;
+  const shareText = t('share.text');
+  try {
+    const blob = await composeShareableImage(currentResult.imgSrc);
+    const result = await shareImage(blob, shareText);
+    if (result === 'copied') showToast('share.copied');
+  } catch (err) {
+    if (err?.name === 'AbortError') return;
+    try {
+      await copyLink(`${shareText} ${siteUrl()}`);
+      showToast('share.copied');
+    } catch {
+      showError('error.network');
+    }
+  }
+});
+
+function showToast(key) {
+  let toast = document.querySelector('.toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = t(key);
+  toast.classList.add('is-visible');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove('is-visible'), 2200);
+}
 
 async function runAnalysis() {
   if (!currentSelfie) {

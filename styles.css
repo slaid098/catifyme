@@ -440,6 +440,31 @@ body {
 }
 .footer .heart { color: var(--accent); }
 
+/* TOAST */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 24px);
+  transform: translateX(-50%) translateY(16px);
+  background: var(--bg-elevated-2);
+  color: var(--text);
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 60;
+  white-space: nowrap;
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* DESKTOP ENHANCEMENT */
 @media (min-width: 768px) {
   :root { --space: 24px; }
