@@ -1,6 +1,6 @@
 import { buildVisionPrompt, buildFallbackImgPrompt } from './prompts.js';
 
-const VISION_MODEL = 'gpt-4o';
+const VISION_MODEL = 'gpt-4o-mini';
 const IMAGE_MODEL = 'dall-e-3';
 const NORMALIZE_MAX = 1536;
 
