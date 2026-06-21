@@ -1,6 +1,6 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
 import { ensureSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
-import { composeShareableImage, shareImage, copyLink, siteUrl } from './share.js';
+import { composeShareableImage, shareImage, shareTo, copyLink, siteUrl } from './share.js';
 
 const els = {
   langBtns: document.querySelectorAll('.lang-btn'),
@@ -10,6 +10,8 @@ const els = {
   btnConfirm: document.getElementById('btn-confirm'),
   btnAgain: document.getElementById('btn-again'),
   btnShare: document.getElementById('btn-share'),
+  btnShareSystem: document.getElementById('btn-share-system'),
+  shareBtns: document.querySelectorAll('[data-share]'),
   btnExplainerGo: document.getElementById('btn-explainer-go'),
   btnErrorRetry: document.getElementById('btn-error-retry'),
   loadingText: document.getElementById('loading-text'),
@@ -23,6 +25,7 @@ const els = {
   sheets: {
     explainer: document.getElementById('sheet-explainer'),
     error: document.getElementById('sheet-error'),
+    share: document.getElementById('sheet-share'),
   },
 };
 
@@ -148,7 +151,33 @@ els.btnErrorRetry.addEventListener('click', async () => {
   if (currentSelfie) await runAnalysis();
 });
 
-els.btnShare.addEventListener('click', async () => {
+els.btnShare.addEventListener('click', () => {
+  if (!currentResult?.imgSrc) return;
+  openSheet('share');
+});
+
+els.shareBtns.forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const platform = btn.dataset.share;
+    const shareText = t('share.text');
+    if (platform === 'copy') {
+      try {
+        await copyLink(`${shareText} ${siteUrl()}`);
+        showToast('share.copied');
+      } catch {
+        showError('error.network', 'stage: share | copy failed');
+      }
+      return;
+    }
+    try {
+      shareTo(platform, shareText);
+    } catch {
+      showError('error.network', `stage: share | ${platform} failed`);
+    }
+  });
+});
+
+els.btnShareSystem.addEventListener('click', async () => {
   if (!currentResult?.imgSrc) return;
   const shareText = t('share.text');
   try {
@@ -160,8 +189,8 @@ els.btnShare.addEventListener('click', async () => {
     try {
       await copyLink(`${shareText} ${siteUrl()}`);
       showToast('share.copied');
-    } catch (err2) {
-      showError('error.network', `stage: share | ${err2?.message || err?.message || 'error'}`);
+    } catch {
+      showError('error.network', `stage: share | ${err?.message || 'error'}`);
     }
   }
 });

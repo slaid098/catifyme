@@ -34,6 +34,9 @@
   "error.close": "Close",
   "share.copied": "Link copied",
   "share.text": "Find out what cat you are → ",
+  "share.title": "Share",
+  "share.copy_link": "Copy link",
+  "share.via_system": "Share via system dialog",
   "footer.made_with": "Made with",
   "footer.powered_by": "on Puter.js"
 }

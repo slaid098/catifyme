@@ -116,6 +116,13 @@ export function installDomMocks() {
   globalThis.navigator.share = undefined;
   globalThis.navigator.clipboard = undefined;
 
+  globalThis.window = globalThis;
+  globalThis.window.open = () => null;
+  globalThis.window.screenX = 0;
+  globalThis.window.screenY = 0;
+  globalThis.window.outerWidth = 1200;
+  globalThis.window.outerHeight = 800;
+
   globalThis.fetch = async (url) => {
     if (url.includes('ru.json')) {
       return { ok: true, json: async () => ({ 'lang.code': 'ru', 'app.title': 'CatifyMe', greeting: 'Привет' }) };

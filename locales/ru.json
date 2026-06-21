@@ -34,6 +34,9 @@
   "error.close": "Закрыть",
   "share.copied": "Ссылка скопирована",
   "share.text": "Узнай, какой ты кот → ",
+  "share.title": "Поделиться",
+  "share.copy_link": "Скопировать ссылку",
+  "share.via_system": "Поделиться через системное окно",
   "footer.made_with": "Сделано с",
   "footer.powered_by": "на Puter.js"
 }

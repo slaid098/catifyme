@@ -96,3 +96,55 @@ describe('copyLink', () => {
     assert.equal(executedCommand, 'copy');
   });
 });
+
+describe('shareTo', () => {
+  test('opens correct URL for telegram', () => {
+    let openedUrl = null;
+    let openedOpts = null;
+    globalThis.window.open = (url, target, opts) => { openedUrl = url; openedOpts = opts; };
+    share.shareTo('telegram', 'check this out', 'https://example.com');
+    assert.match(openedUrl, /^https:\/\/t\.me\/share\/url/);
+    assert.match(openedUrl, /url=https%3A%2F%2Fexample\.com/);
+    assert.match(openedUrl, /text=check%20this%20out/);
+    assert.match(openedOpts, /noopener/);
+  });
+
+  test('opens correct URL for x (twitter)', () => {
+    let openedUrl = null;
+    globalThis.window.open = (url) => { openedUrl = url; };
+    share.shareTo('x', 'my cat', 'https://example.com');
+    assert.match(openedUrl, /^https:\/\/twitter\.com\/intent\/tweet/);
+  });
+
+  test('opens correct URL for whatsapp', () => {
+    let openedUrl = null;
+    globalThis.window.open = (url) => { openedUrl = url; };
+    share.shareTo('whatsapp', 'meow', 'https://example.com');
+    assert.match(openedUrl, /^https:\/\/wa\.me\/\?text=/);
+  });
+
+  test('opens correct URL for reddit', () => {
+    let openedUrl = null;
+    globalThis.window.open = (url) => { openedUrl = url; };
+    share.shareTo('reddit', 'lol cat', 'https://example.com');
+    assert.match(openedUrl, /^https:\/\/www\.reddit\.com\/submit/);
+  });
+
+  test('opens correct URL for vk', () => {
+    let openedUrl = null;
+    globalThis.window.open = (url) => { openedUrl = url; };
+    share.shareTo('vk', 'ignore text', 'https://example.com');
+    assert.match(openedUrl, /^https:\/\/vk\.com\/share\.php/);
+  });
+
+  test('throws for unknown platform', () => {
+    assert.throws(() => share.shareTo('myspace', 'text', 'url'), /Unknown platform/);
+  });
+
+  test('uses default site URL when url omitted', () => {
+    let openedUrl = null;
+    globalThis.window.open = (url) => { openedUrl = url; };
+    share.shareTo('telegram', 'hi');
+    assert.match(openedUrl, /catifyme/);
+  });
+});

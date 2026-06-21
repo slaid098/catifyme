@@ -96,3 +96,23 @@ export async function copyLink(text) {
 export function siteUrl() {
   return SITE_URL;
 }
+
+const SHARE_URLS = {
+  telegram: (url, text) => `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+  x: (url, text) => `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+  whatsapp: (url, text) => `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
+  reddit: (url, text) => `https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}`,
+  vk: (url) => `https://vk.com/share.php?url=${encodeURIComponent(url)}`,
+};
+
+export function shareTo(platform, text, url = SITE_URL) {
+  const builder = SHARE_URLS[platform];
+  if (!builder) throw new Error(`Unknown platform: ${platform}`);
+  const shareUrl = builder(url, text);
+  const w = 600;
+  const h = 600;
+  const left = window.screenX + Math.max(0, (window.outerWidth - w) / 2);
+  const top = window.screenY + Math.max(0, (window.outerHeight - h) / 2);
+  window.open(shareUrl, '_blank', `noopener,noreferrer,width=${w},height=${h},left=${left},top=${top}`);
+}
+

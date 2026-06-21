@@ -394,6 +394,50 @@ body {
   line-height: 1.4;
 }
 
+/* SHARE GRID */
+.share-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.share-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  background: var(--bg-elevated-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.share-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+}
+.share-btn:active { transform: scale(0.96); }
+.share-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.share-label {
+  text-align: center;
+  color: var(--text-muted);
+}
+
 /* TOAST */
 .toast {
   position: fixed;

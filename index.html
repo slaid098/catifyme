@@ -155,6 +155,54 @@
         </div>
       </div>
     </div>
+
+    <!-- SHARE BOTTOM-SHEET -->
+    <div id="sheet-share" class="sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" hidden>
+      <div class="sheet-backdrop" data-close="share"></div>
+      <div class="sheet-panel">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <h2 id="share-title" class="sheet-title" data-i18n="share.title">Share</h2>
+        <div class="share-grid">
+          <button class="share-btn" type="button" data-share="telegram" aria-label="Telegram">
+            <span class="share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+            </span>
+            <span class="share-label">Telegram</span>
+          </button>
+          <button class="share-btn" type="button" data-share="x" aria-label="X">
+            <span class="share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.91l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </span>
+            <span class="share-label">X</span>
+          </button>
+          <button class="share-btn" type="button" data-share="whatsapp" aria-label="WhatsApp">
+            <span class="share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.27 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.039zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </span>
+            <span class="share-label">WhatsApp</span>
+          </button>
+          <button class="share-btn" type="button" data-share="reddit" aria-label="Reddit">
+            <span class="share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.75.782 1.75 1.75 0 .716-.413 1.327-1.01 1.606a3.3 3.3 0 01.029.453c0 2.313-2.937 4.187-6.563 4.187s-6.563-1.874-6.563-4.187c0-.152.01-.301.029-.453-.596-.279-1.01-.89-1.01-1.606 0-.968.782-1.75 1.75-1.75.477 0 .9.182 1.207.49 1.207-.867 2.879-1.43 4.724-1.487l.885-4.152a.325.325 0 01.372-.262zm-3.813 8.5c-.726 0-1.313.587-1.313 1.313s.587 1.313 1.313 1.313 1.312-.587 1.312-1.313-.586-1.313-1.312-1.313zm4.438 0a1.312 1.312 0 100 2.625 1.312 1.312 0 000-2.625zm-2.219 4.014a.324.324 0 00-.218.09c-.123.122-.34.21-.582.21s-.46-.088-.582-.21a.324.324 0 00-.458.458c.27.27.654.42 1.04.42s.77-.15 1.04-.42a.324.324 0 00-.04-.47.324.324 0 00-.2-.078z"/></svg>
+            </span>
+            <span class="share-label">Reddit</span>
+          </button>
+          <button class="share-btn" type="button" data-share="vk" aria-label="VK">
+            <span class="share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12.785 16.241s.288-.032.435-.193c.136-.148.131-.425.131-.425s-.018-1.298.582-1.49c.593-.188 1.354 1.212 2.16 1.747.61.405 1.075.317 1.075.317l2.154-.03s1.126-.07.592-.954c-.044-.07-.31-.65-1.598-1.85-1.35-1.255-1.169-1.052.458-3.222.99-1.321 1.387-2.131 1.263-2.477-.117-.331-.842-.244-.842-.244l-2.426.015s-.18-.025-.313.055c-.13.079-.214.263-.214.263s-.382 1.029-.892 1.905c-1.075 1.832-1.504 1.929-1.681 1.815-.41-.265-.307-1.067-.307-1.637 0-1.78.27-2.522-.521-2.716-.262-.064-.456-.106-1.127-.113-.86-.009-1.589.003-2.002.205-.275.135-.487.435-.358.452.16.022.522.099.714.36.249.337.24 1.095.24 1.095s.143 2.099-.334 2.36c-.327.178-.776-.185-1.735-1.85-.494-.857-.867-1.804-.867-1.804s-.072-.176-.2-.27c-.155-.114-.371-.15-.371-.15l-2.305.015s-.346.01-.473.16c-.113.135-.009.412-.009.412s1.805 4.222 3.849 6.352c1.874 1.95 4.002 1.821 4.002 1.821h.964z"/></svg>
+            </span>
+            <span class="share-label">VK</span>
+          </button>
+          <button class="share-btn" type="button" data-share="copy" aria-label="Copy link">
+            <span class="share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <span class="share-label" data-i18n="share.copy_link">Copy link</span>
+          </button>
+        </div>
+        <button id="btn-share-system" class="btn btn--text" type="button" data-i18n="share.via_system">Share via system dialog</button>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="app.js"></script>
