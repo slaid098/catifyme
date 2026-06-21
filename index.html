@@ -67,7 +67,6 @@
   <main id="app">
     <!-- HERO / UPLOAD -->
     <section id="screen-hero" class="screen screen--hero is-active" aria-labelledby="hero-title">
-      <div class="hero-glow" aria-hidden="true"></div>
       <h1 id="hero-title" class="hero-title" data-i18n="app.tagline">What cat are you?</h1>
       <p class="hero-subtitle" data-i18n="hero.subtitle">Upload a selfie — get a cartoon cat that matches your vibe</p>
 
@@ -81,12 +80,10 @@
           <input id="camera-input" class="file-input" type="file" accept="image/*" capture="user" hidden />
         </label>
       </div>
-      <p class="upload-hint" data-i18n="upload.hint">Photo stays on your device, then goes to the AI</p>
     </section>
 
     <!-- PREVIEW -->
-    <section id="screen-preview" class="screen screen--preview" aria-labelledby="preview-title">
-      <h2 id="preview-title" class="section-title" data-i18n="upload.preview.title">Your photo</h2>
+    <section id="screen-preview" class="screen screen--preview" aria-live="polite">
       <div class="preview-frame">
         <img id="preview-img" alt="" />
       </div>
@@ -94,7 +91,7 @@
         <label class="btn btn--ghost" for="file-input">
           <span data-i18n="upload.preview.change">Choose another</span>
         </label>
-        <button id="btn-confirm" class="btn btn--primary" type="button" data-i18n="upload.preview.confirm">Find my cat</button>
+        <button id="btn-confirm" class="btn btn--primary" type="button" data-i18n="upload.preview.confirm">Create my cat</button>
       </div>
     </section>
 
@@ -107,42 +104,24 @@
           <span class="paw">🐾</span>
         </div>
         <p id="loading-text" class="loader-text" data-i18n="loading.analyzing">Analyzing your selfie…</p>
-        <ol class="loader-steps" aria-hidden="true">
-          <li class="step is-active" data-step="analyzing"></li>
-          <li class="step" data-step="thinking"></li>
-          <li class="step" data-step="drawing"></li>
-        </ol>
       </div>
     </section>
 
     <!-- RESULT -->
-    <section id="screen-result" class="screen screen--result" aria-labelledby="result-title">
-      <h2 id="result-title" class="section-title" data-i18n="result.title">Your cat</h2>
+    <section id="screen-result" class="screen screen--result" aria-live="polite">
       <figure class="result-card">
         <div class="result-img-wrap">
           <img id="result-img" alt="" />
         </div>
         <figcaption class="result-meta">
           <p class="result-name" id="result-name"></p>
-          <dl class="result-facts">
-            <div>
-              <dt data-i18n="result.breed">Breed</dt>
-              <dd id="result-breed"></dd>
-            </div>
-            <div>
-              <dt data-i18n="result.personality">Personality</dt>
-              <dd id="result-personality"></dd>
-            </div>
-            <div>
-              <dt data-i18n="result.fun_fact">A fun fact about you-cat</dt>
-              <dd id="result-funfact"></dd>
-            </div>
-          </dl>
+          <p class="result-breed" id="result-breed"></p>
+          <p class="result-personality" id="result-personality"></p>
+          <p class="result-funfact" id="result-funfact"></p>
         </figcaption>
       </figure>
       <div class="result-actions">
-        <button id="btn-download" class="btn btn--ghost" type="button" data-i18n="result.download">Download</button>
-        <button id="btn-share" class="btn btn--primary" type="button" data-i18n="result.share">Share</button>
+        <button id="btn-share" class="btn btn--primary btn--lg" type="button" data-i18n="result.share">Share</button>
       </div>
       <button id="btn-again" class="btn btn--text" type="button" data-i18n="result.again">Another photo</button>
     </section>

@@ -1,6 +1,6 @@
 import { initI18n, setLang, getLang, t, onLangChange } from './i18n.js';
 import { ensureSignedIn, analyzeSelfie, generateCat } from './puter-api.js';
-import { composeShareableImage, downloadBlob, shareImage, copyLink, siteUrl } from './share.js';
+import { composeShareableImage, shareImage, copyLink, siteUrl } from './share.js';
 
 const els = {
   langBtns: document.querySelectorAll('.lang-btn'),
@@ -9,7 +9,6 @@ const els = {
   previewImg: document.getElementById('preview-img'),
   btnConfirm: document.getElementById('btn-confirm'),
   btnAgain: document.getElementById('btn-again'),
-  btnDownload: document.getElementById('btn-download'),
   btnShare: document.getElementById('btn-share'),
   btnExplainerGo: document.getElementById('btn-explainer-go'),
   btnErrorRetry: document.getElementById('btn-error-retry'),
@@ -77,16 +76,6 @@ function setLoadingText(key) {
   els.loadingText.textContent = t(key);
 }
 
-const STEP_ORDER = ['analyzing', 'thinking', 'drawing'];
-
-function setActiveStep(step) {
-  const idx = STEP_ORDER.indexOf(step);
-  document.querySelectorAll('.loader-steps .step').forEach((el, i) => {
-    el.classList.toggle('is-active', i === idx);
-    el.classList.toggle('is-done', i < idx);
-  });
-}
-
 function updateLangButtons() {
   const active = getLang();
   els.langBtns.forEach((btn) => {
@@ -112,7 +101,7 @@ async function handleFile(file) {
     const dataURL = await readFileAsDataURL(file);
     currentSelfie = dataURL;
     els.previewImg.src = dataURL;
-    els.previewImg.alt = t('upload.preview.title');
+    els.previewImg.alt = '';
     showScreen('preview');
   } catch (err) {
     showError('error.vision', `stage: upload | ${err?.message || 'read error'}`);
@@ -159,16 +148,6 @@ els.btnErrorRetry.addEventListener('click', async () => {
   if (currentSelfie) await runAnalysis();
 });
 
-els.btnDownload.addEventListener('click', async () => {
-  if (!currentResult?.imgSrc) return;
-  try {
-    const blob = await composeShareableImage(currentResult.imgSrc);
-    downloadBlob(blob, `catifyme-${currentResult.catName || 'cat'}.jpg`);
-  } catch (err) {
-    showError('error.generate', `stage: download | ${err?.message || 'error'}`);
-  }
-});
-
 els.btnShare.addEventListener('click', async () => {
   if (!currentResult?.imgSrc) return;
   const shareText = t('share.text');
@@ -207,17 +186,14 @@ async function runAnalysis() {
   }
   showScreen('loading');
   setLoadingText('loading.analyzing');
-  setActiveStep('analyzing');
   let stage = 'auth';
   try {
     await ensureSignedIn();
     stage = 'vision';
     setLoadingText('loading.thinking');
-    setActiveStep('thinking');
     const analysis = await analyzeSelfie(currentSelfie, getLang());
     stage = 'image';
     setLoadingText('loading.drawing');
-    setActiveStep('drawing');
     const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed);
     currentResult = { ...analysis, imgSrc: catImg.src };
     renderResult(currentResult);
@@ -242,7 +218,7 @@ function renderResult(analysis) {
     wrap.classList.add('is-loading');
     els.resultImg.removeAttribute('src');
   }
-  els.resultImg.alt = analysis.catName || t('result.title');
+  els.resultImg.alt = analysis.catName || '';
 }
 
 function init() {
