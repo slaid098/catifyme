@@ -65,6 +65,15 @@ Project URL: `catifyme.vercel.app`
 
 Do not commit `.vercel/` or any local config.
 
+## Testing
+
+- Runner: `node --test` (Node 20+, built-in, no dependencies)
+- Run: `npm test` or `node --test test/`
+- Tests in `test/`, mocks in `test/helpers/`
+- CI: GitHub Actions on every push/PR (`.github/workflows/test.yml`)
+- Key test: `puter-api.test.js` verifies image is passed via `puter_path`,
+  not raw dataURL — prevents regression of the multimodal API call bug.
+
 ## License
 
 MIT. All contributions accept the same license.

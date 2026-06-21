@@ -1,5 +1,7 @@
 # CatifyMe
 
+[![tests](https://github.com/slaid098/catifyme/actions/workflows/test.yml/badge.svg)](https://github.com/slaid098/catifyme/actions/workflows/test.yml)
+
 > Upload a selfie — get a cartoon cat that matches your vibe. 🐱
 
 <p align="center">
