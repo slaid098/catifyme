@@ -69,24 +69,40 @@ export async function ensureSignedIn() {
   await puter.auth.signIn();
 }
 
+function dataURLtoBlob(dataURL) {
+  const [header, base64] = dataURL.split(',');
+  const mime = (header.match(/data:(.*?);/) || [, 'image/jpeg'])[1];
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
 export async function analyzeSelfie(imageDataURL, lang) {
   if (!imageDataURL) throw new Error('No image provided');
   const normalized = await normalizeImageToJPEG(imageDataURL);
-  const messages = buildVisionPrompt(lang);
-  const response = await puter.ai.chat(messages, normalized, { model: VISION_MODEL });
-  const text = extractText(response);
-  if (!text) throw new Error('Empty AI response');
-  const data = parseJSON(text);
-  if (!data.cat_breed || !data.img_prompt) {
-    throw new Error('Incomplete AI response: ' + text.slice(0, 200));
+  const blob = dataURLtoBlob(normalized);
+  const tempName = `catifyme_temp_${Date.now()}.jpg`;
+  const uploaded = await puter.fs.write(tempName, blob);
+  try {
+    const messages = buildVisionPrompt(lang, uploaded.path);
+    const response = await puter.ai.chat(messages, { model: VISION_MODEL });
+    const text = extractText(response);
+    if (!text) throw new Error('Empty AI response');
+    const data = parseJSON(text);
+    if (!data.cat_breed || !data.img_prompt) {
+      throw new Error('Incomplete AI response: ' + text.slice(0, 200));
+    }
+    return {
+      catBreed: data.cat_breed,
+      catName: data.cat_name || 'Cat',
+      personality: data.personality || '',
+      funFact: data.fun_fact || '',
+      imgPrompt: data.img_prompt,
+    };
+  } finally {
+    await puter.fs.delete(uploaded.path).catch(() => {});
   }
-  return {
-    catBreed: data.cat_breed,
-    catName: data.cat_name || 'Cat',
-    personality: data.personality || '',
-    funFact: data.fun_fact || '',
-    imgPrompt: data.img_prompt,
-  };
 }
 
 export async function generateCat(imgPrompt, breed) {

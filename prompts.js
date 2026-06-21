@@ -1,4 +1,4 @@
-export function buildVisionPrompt(lang) {
+export function buildVisionPrompt(lang, puterPath) {
   const langName = lang === 'ru' ? 'Russian' : 'English';
   return [
     {
@@ -9,7 +9,10 @@ Never include anything outside the JSON object. Always return a complete cat cha
     },
     {
       role: 'user',
-      content: 'Look at this image and create a cat character inspired by it. Return the JSON.',
+      content: [
+        { type: 'file', puter_path: puterPath },
+        { type: 'text', text: 'Look at this image and create a cat character inspired by it. Return the JSON.' },
+      ],
     },
   ];
 }

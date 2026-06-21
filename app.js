@@ -67,9 +67,9 @@ function showError(messageKey, techDetail) {
 }
 
 function mapError(err) {
-  if (err?.code === 'no_face') return 'error.vision';
   if (err?.message?.includes('auth') || err?.message?.includes('sign')) return 'error.login';
   if (err?.message?.includes('network') || err?.name === 'TypeError') return 'error.network';
+  if (err?.message?.includes('image-decode') || err?.message?.includes('vision')) return 'error.vision';
   return 'error.generate';
 }
 
