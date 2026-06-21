@@ -2,7 +2,7 @@ import { buildVisionPrompt, buildFallbackImgPrompt } from './prompts.js';
 
 const VISION_MODEL = 'gpt-4o';
 const IMAGE_MODEL = 'dall-e-3';
-const NORMALIZE_MAX = 1024;
+const NORMALIZE_MAX = 1536;
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -22,10 +22,8 @@ export async function normalizeImageToJPEG(dataURL) {
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, w, h);
   ctx.drawImage(img, 0, 0, w, h);
-  return canvas.toDataURL('image/jpeg', 0.9);
+  return canvas.toDataURL('image/jpeg', 0.92);
 }
 
 function extractText(response) {
@@ -79,19 +77,14 @@ export async function analyzeSelfie(imageDataURL, lang) {
   const text = extractText(response);
   if (!text) throw new Error('Empty AI response');
   const data = parseJSON(text);
-  if (data.error === 'no_face') {
-    const err = new Error('no_face');
-    err.code = 'no_face';
-    throw err;
-  }
   if (!data.cat_breed || !data.img_prompt) {
-    throw new Error('Incomplete AI response');
+    throw new Error('Incomplete AI response: ' + text.slice(0, 200));
   }
   return {
     catBreed: data.cat_breed,
-    catName: data.cat_name,
-    personality: data.personality,
-    funFact: data.fun_fact,
+    catName: data.cat_name || 'Cat',
+    personality: data.personality || '',
+    funFact: data.fun_fact || '',
     imgPrompt: data.img_prompt,
   };
 }
