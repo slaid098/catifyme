@@ -4,6 +4,7 @@ export function createPuterMock(overrides = {}) {
     fsWrite: [],
     fsDelete: [],
     signIn: [],
+    txt2img: [],
   };
 
   const state = {
@@ -12,6 +13,7 @@ export function createPuterMock(overrides = {}) {
     chatShouldThrow: null,
     fsShouldThrow: null,
     txt2imgResponse: null,
+    txt2imgShouldThrow: null,
     ...overrides,
   };
 
@@ -25,6 +27,8 @@ export function createPuterMock(overrides = {}) {
         return { message: { content: '{"cat_breed":"Tabby","cat_name":"Whiskers","personality":"chill","fun_fact":"naps a lot","img_prompt":"a cute tabby cat"}' } };
       },
       txt2img: async (prompt, options) => {
+        calls.txt2img.push({ prompt, options });
+        if (state.txt2imgShouldThrow) throw state.txt2imgShouldThrow;
         if (state.txt2imgResponse) return state.txt2imgResponse;
         const img = { src: 'data:image/png;base64,mock', alt: '' };
         return img;

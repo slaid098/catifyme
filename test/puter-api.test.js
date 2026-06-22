@@ -116,6 +116,36 @@ describe('generateCat', () => {
   });
 });
 
+describe('generateCat img2img', () => {
+  test('passes input_image and gemini model when selfieDataURL provided', async () => {
+    mock.state.txt2imgResponse = { src: 'data:image/png;base64,mock' };
+    await puterApi.generateCat('a cool cat', 'Toxic Capyboss', 'data:image/jpeg;base64,selfie');
+    assert.equal(mock.calls.txt2img.length, 1);
+    assert.equal(mock.calls.txt2img[0].options.model, 'gemini-2.5-flash-image-preview');
+    assert.equal(mock.calls.txt2img[0].options.input_image, 'data:image/jpeg;base64,selfie');
+  });
+
+  test('falls back to text-only when img2img throws', async () => {
+    let callCount = 0;
+    mock.puter.ai.txt2img = async (prompt, options) => {
+      callCount++;
+      if (callCount === 1) throw new Error('img2img failed');
+      return { src: 'data:image/png;base64,mock' };
+    };
+    const img = await puterApi.generateCat('a cool cat', 'Toxic Capyboss', 'data:image/jpeg;base64,selfie');
+    assert.ok(img.src);
+    assert.equal(callCount, 2);
+  });
+
+  test('does not pass input_image when selfieDataURL is null', async () => {
+    mock.state.txt2imgResponse = { src: 'data:image/png;base64,mock' };
+    await puterApi.generateCat('a cool cat', 'Toxic Capyboss', null);
+    assert.equal(mock.calls.txt2img.length, 1);
+    assert.equal(mock.calls.txt2img[0].options.model, 'gpt-image-1-mini');
+    assert.equal(mock.calls.txt2img[0].options.input_image, undefined);
+  });
+});
+
 describe('ensureSignedIn', () => {
   test('skips signIn when already signed in', async () => {
     mock.state.signedIn = true;

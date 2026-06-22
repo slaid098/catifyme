@@ -294,7 +294,7 @@ async function runAnalysis() {
     const analysis = await analyzeSelfie(currentSelfie, getLang());
     stage = 'image';
     setLoadingText('loading.drawing');
-    const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed);
+    const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed, currentSelfie);
     currentResult = { ...analysis, imgSrc: catImg.src };
     clearPendingSelfie();
     renderResult(currentResult);
