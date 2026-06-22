@@ -128,6 +128,8 @@ export async function generateCat(imgPrompt, breed, selfieDataURL) {
       const imgEl = await puter.ai.txt2img(prompt, {
         model: IMG2IMG_MODEL,
         input_image: selfieDataURL,
+        input_image_mime_type: 'image/jpeg',
+        strength: 0.5,
       });
       if (imgEl?.src) {
         console.log('[catifyme] img2img: success');

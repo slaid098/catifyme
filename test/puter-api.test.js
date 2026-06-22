@@ -123,6 +123,8 @@ describe('generateCat img2img', () => {
     assert.equal(mock.calls.txt2img.length, 1);
     assert.equal(mock.calls.txt2img[0].options.model, 'gemini-2.5-flash-image-preview');
     assert.equal(mock.calls.txt2img[0].options.input_image, 'data:image/jpeg;base64,selfie');
+    assert.equal(mock.calls.txt2img[0].options.input_image_mime_type, 'image/jpeg');
+    assert.equal(mock.calls.txt2img[0].options.strength, 0.5);
   });
 
   test('falls back to text-only when img2img throws', async () => {

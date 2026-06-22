@@ -280,12 +280,13 @@ async function runAnalysis() {
   }
   showScreen('loading');
   setLoadingText('loading.analyzing');
+  let normalizedSelfie = currentSelfie;
   try {
-    const normalized = await normalizeImageToJPEG(currentSelfie);
-    savePendingSelfie(normalized);
+    normalizedSelfie = await normalizeImageToJPEG(currentSelfie);
   } catch (e) {
-    savePendingSelfie(currentSelfie);
+    // fallback to raw selfie
   }
+  savePendingSelfie(normalizedSelfie);
   let stage = 'auth';
   try {
     await ensureSignedIn();
@@ -294,7 +295,7 @@ async function runAnalysis() {
     const analysis = await analyzeSelfie(currentSelfie, getLang());
     stage = 'image';
     setLoadingText('loading.drawing');
-    const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed, currentSelfie);
+    const catImg = await generateCat(analysis.imgPrompt, analysis.catBreed, normalizedSelfie);
     currentResult = { ...analysis, imgSrc: catImg.src };
     clearPendingSelfie();
     renderResult(currentResult);
