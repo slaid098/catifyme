@@ -68,6 +68,13 @@ describe('buildVisionPrompt', () => {
       /mood|bastard|philosopher|psycho|lazy|aristocrat|paranoid|sage|trickster|diva|nihilistic|maniac|grumpy|flirty|warrior|clingy|sarcastic|mystical|villain|athlete/i,
     );
   });
+
+  test('system prompt instructs img_prompt to reflect facial features', () => {
+    const messages = buildVisionPrompt('en', '~/temp.jpg');
+    const sys = messages[0].content;
+    assert.match(sys, /visible features/i);
+    assert.match(sys, /hair|glasses|face/i);
+  });
 });
 
 describe('pickPersonality', () => {

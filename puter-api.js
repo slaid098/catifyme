@@ -2,7 +2,6 @@ import { buildVisionPrompt, buildFallbackImgPrompt } from './prompts.js';
 
 const VISION_MODEL = 'gpt-4o-mini';
 const IMAGE_MODEL = 'gpt-image-1-mini';
-const IMG2IMG_MODEL = 'gemini-2.5-flash-image-preview';
 const NORMALIZE_MAX = 1536;
 
 function loadImage(src) {
@@ -92,11 +91,6 @@ function dataURLtoBlob(dataURL) {
   return new Blob([bytes], { type: mime });
 }
 
-function stripDataUrlPrefix(dataURL) {
-  const commaIdx = dataURL.indexOf(',');
-  return commaIdx >= 0 ? dataURL.slice(commaIdx + 1) : dataURL;
-}
-
 export async function analyzeSelfie(imageDataURL, lang) {
   if (!imageDataURL) throw new Error('No image provided');
   const normalized = await normalizeImageToJPEG(imageDataURL);
@@ -124,30 +118,9 @@ export async function analyzeSelfie(imageDataURL, lang) {
   }
 }
 
-export async function generateCat(imgPrompt, breed, selfieDataURL) {
+export async function generateCat(imgPrompt, breed) {
   if (typeof puter === 'undefined') throw new Error('Puter not loaded');
   const prompt = imgPrompt || buildFallbackImgPrompt(breed);
-
-  if (selfieDataURL) {
-    try {
-      const rawBase64 = stripDataUrlPrefix(selfieDataURL);
-      console.log('[catifyme] img2img: sending', rawBase64.length, 'bytes of base64');
-      const imgEl = await puter.ai.txt2img(prompt, {
-        model: IMG2IMG_MODEL,
-        input_image: rawBase64,
-        input_image_mime_type: 'image/jpeg',
-        strength: 0.5,
-      });
-      if (imgEl?.src) {
-        console.log('[catifyme] img2img: success');
-        return imgEl;
-      }
-    } catch (err) {
-      console.warn('[catifyme] img2img: failed, falling back to text-only —', err?.message || err);
-    }
-  }
-
-  console.log('[catifyme] txt2img: fallback (text-only)');
   const imgEl = await puter.ai.txt2img(prompt, { model: IMAGE_MODEL, quality: 'low' });
   if (!imgEl || !imgEl.src) throw new Error('Image generation returned empty result');
   return imgEl;
