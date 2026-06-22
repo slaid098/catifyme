@@ -129,12 +129,16 @@ export async function generateCat(imgPrompt, breed, selfieDataURL) {
         model: IMG2IMG_MODEL,
         input_image: selfieDataURL,
       });
-      if (imgEl?.src) return imgEl;
-    } catch {
-      // fallback to text-only generation
+      if (imgEl?.src) {
+        console.log('[catifyme] img2img: success');
+        return imgEl;
+      }
+    } catch (err) {
+      console.warn('[catifyme] img2img: failed, falling back to text-only —', err?.message || err);
     }
   }
 
+  console.log('[catifyme] txt2img: fallback (text-only)');
   const imgEl = await puter.ai.txt2img(prompt, { model: IMAGE_MODEL, quality: 'low' });
   if (!imgEl || !imgEl.src) throw new Error('Image generation returned empty result');
   return imgEl;
