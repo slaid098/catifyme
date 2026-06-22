@@ -117,12 +117,12 @@ describe('generateCat', () => {
 });
 
 describe('generateCat img2img', () => {
-  test('passes input_image and gemini model when selfieDataURL provided', async () => {
+  test('passes input_image as raw base64 (no data url prefix) and gemini model when selfieDataURL provided', async () => {
     mock.state.txt2imgResponse = { src: 'data:image/png;base64,mock' };
     await puterApi.generateCat('a cool cat', 'Toxic Capyboss', 'data:image/jpeg;base64,selfie');
     assert.equal(mock.calls.txt2img.length, 1);
     assert.equal(mock.calls.txt2img[0].options.model, 'gemini-2.5-flash-image-preview');
-    assert.equal(mock.calls.txt2img[0].options.input_image, 'data:image/jpeg;base64,selfie');
+    assert.equal(mock.calls.txt2img[0].options.input_image, 'selfie');
     assert.equal(mock.calls.txt2img[0].options.input_image_mime_type, 'image/jpeg');
     assert.equal(mock.calls.txt2img[0].options.strength, 0.5);
   });
